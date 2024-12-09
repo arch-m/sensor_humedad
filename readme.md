@@ -1,8 +1,15 @@
 # INSTALACION
 Instalar y ejecutar virtual enviroment de Python
 > python3 -m venv env
+
+Ir a ruta
 > cd env/bin
+
+Activar virtual enviroment
 > source activate
+
+Instalar paquetes
+> pip install pyserial
 
 Se debe multiplexar una terminal o utilizar en su defecto mas de un ventana o metodo
 preferido para tener tres procesos en ejecucion
