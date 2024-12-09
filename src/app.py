@@ -1,7 +1,7 @@
 import serial
 
-# Configurar el puerto serial con el puerto COM creado
-ser = serial.Serial('/dev/ttyV0', 9600, timeout=1)  # Usar COM7
+# Configurar el puerto serial con el puerto ttyV0 creado
+ser = serial.Serial('/dev/ttyV0', 9600, timeout=1)  # Usar V0
 
 # Leer datos
 while True:

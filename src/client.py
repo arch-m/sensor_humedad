@@ -1,13 +1,13 @@
 import socket
 
-# Create a socket object
+# Crear socket
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# Connect to the server (replace 'localhost' with server's IP if needed)
+# Conectar al server
 client_socket.connect(('localhost', 8080))
 
 while True:
-    # Receive the response from the server
+    # Recibir respuesta desde el servidor
     response = client_socket.recv(1024)
 
     if not response:
@@ -16,5 +16,7 @@ while True:
 
     print(f"Received from server: {response.decode()}")
 
-# Close the connection
-client_socket.close()
+# Cerrar conexion hacia el socket
+client_socket.close()
+
+
