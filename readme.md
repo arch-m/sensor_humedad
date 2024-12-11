@@ -17,7 +17,7 @@ preferido para tener tres procesos en ejecucion
 *server.py* se mantiene escuchando al puerto para leer los bits de entrada y enviarlos al socket
 que se encuentra configurado en la ruta *http://localhost:8080*, se decide
 utilizar durante la fase pruebas los puertos virtuales ttyV0 y ttyV1, por ello, se
-requieren permisos de ejecucion de tipo adminstrador (sudo)
+requieren permisos de ejecucion de tipo adminstrador (sudo). Los paquetes de python-socketio y eventlet se deben instalar como administrador.
 
 *client.py* es un archivo temporal y sera remplazado por un proyecto de React con SocketIO
 y su unica funcion actual es mantenerse como cliente de lectura de cadena.

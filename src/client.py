@@ -1,22 +1,22 @@
-import socket
+import socketio
 
-# Crear socket
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sio = socketio.Client()
 
-# Conectar al server
-client_socket.connect(('localhost', 8080))
+@sio.event
+def connect():
+    sio.emit("message", {'content' : "hello" })
+    print("Connected")
+    
+@sio.on('response')
+def on_response(data):
+    print(data)
 
-while True:
-    # Recibir respuesta desde el servidor
-    response = client_socket.recv(1024)
+@sio.event
+def disconnect():
+    print("Desconectando del servidor")
 
-    if not response:
-        print("no")
-        break
+if __name__ == "__main__":
+    # connect
 
-    print(f"Received from server: {response.decode()}")
-
-# Cerrar conexion hacia el socket
-client_socket.close()
-
-
+    sio.connect('http://localhost:8080')
+    sio.wait()

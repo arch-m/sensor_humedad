@@ -1,35 +1,52 @@
-import socket
-import serial
 import time
+import socketio
+import eventlet
+eventlet.monkey_patch()
+import serial
+
+# Voltaje de resolucion
+vres = 0.0619
+
+# Puerto definicion
+portRoute = '/dev/ttyV0'
+port = 9600
 
 # Puerto serial
-ser = serial.Serial('/dev/ttyV0', 9600, timeout=1)
+ser = serial.Serial(portRoute, port, timeout=1)
 
 # Crear el socket
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sio = socketio.Server(cors_allowed_origins="*")
+app = socketio.WSGIApp(sio)
 
-# Ligar socket a la ruta y puerto
-server_socket.bind(('localhost', 8080))
+# Evento de conexion
+@sio.event
+def connect(sid, environ):
+    print(sid)
+    sio.emit("respuesta", {"nombre": "Hello"}, to=sid)
 
-# Habilitar socket para recibir las conexiones
-server_socket.listen(1)
+def start_stream():
+    print("Leyendo puerto...")
+    while True:
+        if ser.in_waiting > 0:
+            data = ser.read(8)
+            print(data)
+            vsensor = round(int(data.decode('utf-8'), 2) * vres, 4)
+            sio.emit("resonga", {"nombre": vsensor })
 
-print("Server listening on port 8080...")
+        eventlet.sleep(0.2)
 
-# Aceptar las conexiones entrantes
-client_socket, client_address = server_socket.accept()
-print(f"Connection from {client_address}")
+# Evento personalizado
+@sio.event
+def mensaje(sid, data):
+    print(data)
+    sio.emit("respuesta", "Servidor recibio", to=sid)
 
-while True:
-    if ser.in_waiting > 0:
-        data = ser.read(8)
-        print(f'Data received {data}')
-        # Enviar mensaje al cliente
-        client_socket.sendall(data)
-        # Dormir 2ms
-        time.sleep(0.2)
+# Desconexion
+@sio.event
+def disconnect(sid):
+    print("desconexion")
 
-# Cerrar las conexiones
-
-client_socket.close()
-server_socket.close()
+if __name__ == "__main__":
+    print("Server listening on port 8080...")
+    eventlet.spawn(start_stream)
+    eventlet.wsgi.server(eventlet.listen(("0.0.0.0", 8080)), app)
